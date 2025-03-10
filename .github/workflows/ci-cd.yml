@@ -124,24 +124,24 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}
-          format: 'table'
-          exit-code: '1'
-          ignore-unfixed: true
-          vuln-type: 'os,library'
-          severity: 'CRITICAL,HIGH'
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}  # Scans the built image with its SHA tag.
+          format: 'table'             # Displays results in a table.
+          exit-code: '1'              #  If critical/high vulnerabilities are found, the workflow fails.
+          ignore-unfixed: true        # Ignores vulnerabilities that have no known fix.
+          vuln-type: 'os,library'     #  Scans both OS packages and application libraries.
+          severity: 'CRITICAL,HIGH'   # Only fails if there are critical or high vulnerabilities.
       
       - name: Push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: true
+          push: true                                   # This time, the image is pushed to the registry.
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       
       - name: Set image tag output
         id: set_output
-        run: echo "image_tag=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT
+        run: echo "image_tag=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_OUTPUT  # Stores the short SHA (first 7 characters of github.sha) as an output. This is useful for referencing the image tag in later workflows.
 
   update-k8s:
     name: Update Kubernetes Deployment
