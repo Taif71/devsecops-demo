@@ -119,10 +119,7 @@ jobs:
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          load: true
-      
-      - name: Debug Image Reference
-        run: echo "Image Ref: ghcr.io/taif71/devsecops-demo:sha-${{ github.sha }}"
+          load: true      
       
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
