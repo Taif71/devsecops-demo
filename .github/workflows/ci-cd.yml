@@ -121,10 +121,13 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           load: true
       
+      - name: Debug Image Reference
+        run: echo "Image Ref: ghcr.io/taif71/devsecops-demo:sha-${{ github.sha }}"
+      
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:sha-${{ github.sha }}  # Scans the built image with its SHA tag.
+          image-ref: ${{ env.IMAGE_NAME }}:sha-${{ github.sha }}  # Scans the built image with its SHA tag.
           format: 'table'             # Displays results in a table.
           exit-code: '1'              #  If critical/high vulnerabilities are found, the workflow fails.
           ignore-unfixed: true        # Ignores vulnerabilities that have no known fix.
